@@ -1,6 +1,6 @@
 """
 Screen: 1200px x 600px
-Character: 44px x 100px
+Character: 44px x 120px
 
 """
 import pygame
@@ -18,36 +18,42 @@ playerIMG = pygame.image.load('Images\Player\Player_0.png')
 walkL = [pygame.image.load('Images\Player\Player_L1.png'),pygame.image.load('Images\Player\Player_L2.png'),pygame.image.load('Images\Player\Player_L3.png'),pygame.image.load('Images\Player\Player_L4.png')]
 walkR = [pygame.image.load('Images\Player\Player_R1.png'),pygame.image.load('Images\Player\Player_R2.png'),pygame.image.load('Images\Player\Player_R3.png'),pygame.image.load('Images\Player\Player_R4.png')]
 
-playerX = 20
-playerY = 340
-playerX_change = 0
-left = False
-right = False
-walk_count = 0
+class Player(object):
+    def __init__(self, x, y):
+        self.playerX = x
+        self.playerY = y
+        self.playerX_Change = 0
+        self.left = False
+        self.right = False
+        self.walk_count = 0
+    
+    def drawPlayer(self,screen):
+        if self.walk_count + 1 >=28:
+            self.walk_count = 0
+        if self.left:
+            screen.blit(walkL[self.walk_count//7], (self.playerX,self.playerY))
+            self.walk_count += 1
+        elif self.right:
+            screen.blit(walkR[self.walk_count//7], (self.playerX,self.playerY))
+            self.walk_count += 1
+        else:
+            screen.blit(playerIMG, (self.playerX,self.playerY))
 
 def player(x,y):
     screen.blit(playerIMG,(x,y))
 
 def updateWindow():
-    global walk_count
+    main_player.walk_count
     
     screen.fill((0,0,0)) # change to background later screen.blit(bg, (0,0))
-    if walk_count + 1 >=28:
-        walk_count = 0
-    if left:
-        screen.blit(walkL[walk_count//7], (playerX,playerY))
-        walk_count += 1
-    elif right:
-        screen.blit(walkR[walk_count//7], (playerX,playerY))
-        walk_count += 1
-    else:
-        screen.blit(playerIMG, (playerX,playerY))
-    
+    main_player.drawPlayer(screen)
     pygame.display.update()
 
 
 # GAME LOOP -----------------------------------------------------------------------------------
 running = True
+main_player = Player(0,340)
+
 while running:
 
     clock.tick(56)
@@ -58,25 +64,27 @@ while running:
     
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                playerX_change = - 3
-                left = True
-                right = False
+                main_player.playerX_Change = - 3
+                main_player.left = True
+                main_player.right = False
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                playerX_change = 3
-                left = False
-                right = True
+                main_player.playerX_Change = 3
+                main_player.left = False
+                main_player.right = True
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                playerX_change = 0.0
-                left = False
-                right = False
-                walk_count = 0
+                main_player.playerX_Change = 0.0
+                main_player.left = False
+                main_player.right = False
+                main_player.walk_count = 0
     
-    playerX += playerX_change
+    # Update the X-Axis Position of the Player
+    main_player.playerX += main_player.playerX_Change
     
-    if playerX <= 0:
-        playerX = 0
-    elif playerX >= 1135: # 675 because the player image is 125width (800 - 125 = 675)
-        playerX = 1135
+    # Boundaries
+    if main_player.playerX <= 0:
+        main_player.playerX = 0
+    elif main_player.playerX >= 1135: # 675 because the player image is 125width (800 - 125 = 675)
+       main_player.playerX = 1135
 
     updateWindow()
