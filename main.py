@@ -13,6 +13,9 @@ pygame.display.set_caption("Devil's Diner")
 # pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
 
+bg = pygame.image.load('Images\Background.png')
+counter = pygame.image.load('Images\counter.png')
+
 # PLAYER --------------------------------------------------------
 playerIMG = pygame.image.load('Images\Player\Player_0.png')
 walkL = [pygame.image.load('Images\Player\Player_L1.png'),pygame.image.load('Images\Player\Player_L2.png'),pygame.image.load('Images\Player\Player_L3.png'),pygame.image.load('Images\Player\Player_L4.png')]
@@ -45,14 +48,15 @@ def player(x,y):
 def updateWindow():
     main_player.walk_count
     
-    screen.fill((0,0,0)) # change to background later screen.blit(bg, (0,0))
+    screen.blit(bg,(0,0)) # change to background later screen.blit(bg, (0,0))
     main_player.drawPlayer(screen)
+    screen.blit(counter,(650,310))
     pygame.display.update()
 
 
 # GAME LOOP -----------------------------------------------------------------------------------
 running = True
-main_player = Player(0,340)
+main_player = Player(0,150)
 
 while running:
 
@@ -64,11 +68,11 @@ while running:
     
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                main_player.playerX_Change = - 3
+                main_player.playerX_Change = - 4
                 main_player.left = True
                 main_player.right = False
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                main_player.playerX_Change = 3
+                main_player.playerX_Change = 4
                 main_player.left = False
                 main_player.right = True
         if event.type == pygame.KEYUP:
