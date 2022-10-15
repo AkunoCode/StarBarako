@@ -10,7 +10,7 @@ from images import *
 pygame.init()
 # ELEMENTS ------------------------------------------------------------------------------------
 screen = pygame.display.set_mode((1200, 675))
-pygame.display.set_caption("Devil's Diner")
+pygame.display.set_caption("Starbarako")
 # icon = pygame.image.load('Pinky_in_Space\Images\space-pig_Icon.png')
 # pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
@@ -32,28 +32,28 @@ class Player(object):
         self.playerX_Change = 0
         self.left = False
         self.right = False
+        self.walking = False
         self.walk_count = 0
     
     def drawPlayer(self,screen):
-        if self.walk_count + 1 >=28:
+        if self.walk_count >=72:
             self.walk_count = 0
-        if self.left:
-            screen.blit(walkL[self.walk_count//7], (self.playerX,self.playerY))
-            self.walk_count += 1
+        if self.left and self.walking:
+            screen.blit(walkL[self.walk_count//9], (self.playerX,self.playerY))
+            self.walk_count += 2
+        elif self.right and self.walking:
+            screen.blit(walkR[self.walk_count//9], (self.playerX,self.playerY))
+            self.walk_count += 2
+        elif self.left:
+            screen.blit(PlayerIMG_L, (self.playerX,self.playerY))
         elif self.right:
-            screen.blit(walkR[self.walk_count//7], (self.playerX,self.playerY))
-            self.walk_count += 1
-        else:
-            screen.blit(playerIMG, (self.playerX,self.playerY))
-
-def player(x,y):
-    screen.blit(playerIMG,(x,y))
+            screen.blit(PlayerIMG_R, (self.playerX,self.playerY))
 
 # GAME LOOP -----------------------------------------------------------------------------------
 def main_game():
     running = True
-    main_player = Player(10,220)
-    
+    main_player = Player(10,245)
+    main_player.right = True
     while running:
 
         clock.tick(56)
@@ -66,19 +66,20 @@ def main_game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     main_player.playerX_Change = - 5
-                    main_player.left = True
                     main_player.right = False
+                    main_player.left = True
+                    main_player.walking = True
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     main_player.playerX_Change = 5
                     main_player.left = False
                     main_player.right = True
+                    main_player.walking = True
                 if event.key == pygame.K_w:
                     select = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     main_player.playerX_Change = 0.0
-                    main_player.left = False
-                    main_player.right = False
+                    main_player.walking = False
                     main_player.walk_count = 0
         
         # Update the X-Axis Position of the Player
@@ -87,8 +88,8 @@ def main_game():
         # Boundaries
         if main_player.playerX <= 10:
             main_player.playerX = 10
-        elif main_player.playerX >= 1050: # 675 because the player image is 125width (800 - 125 = 675)
-            main_player.playerX = 1050
+        elif main_player.playerX >= 1010: # 675 because the player image is 125width (800 - 125 = 675)
+            main_player.playerX = 1010
 
         if main_player.playerX >= 930 and select:
             selection_menu()
